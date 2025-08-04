@@ -11,7 +11,10 @@ app = Flask(__name__)
 
 # Load TRAIN TIMING sheet once at startup
 train_timing_df = pd.read_excel("Train_timing.xlsx", sheet_name="TRAIN TIMING")
-station_order = train_timing_df["Station Code"].tolist()
+expected_column = "Station Code"
+if expected_column not in train_timing_df.columns:
+    raise ValueError(f"Required column '{expected_column}' not found in the input file. Found columns: {list(train_timing_df.columns)}")
+station_order = train_timing_df[expected_column].tolist()
 hindi_station_map = dict(zip(train_timing_df["Station Code"], train_timing_df["Hindi Name"]))
 
 # Column headers from TRAIN TIMING sheet
@@ -109,4 +112,5 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
